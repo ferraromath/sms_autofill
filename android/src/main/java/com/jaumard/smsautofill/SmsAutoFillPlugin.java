@@ -111,8 +111,12 @@ public class SmsAutoFillPlugin implements FlutterPlugin, ActivityAware, MethodCa
                         unregisterReceiver();// unregister existing receiver
                         broadcastReceiver = new SmsBroadcastReceiver(new WeakReference<>(SmsAutoFillPlugin.this),
                                 smsCodeRegexPattern);
-                        activity.registerReceiver(broadcastReceiver,
-                                new IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION));
+                        IntentFilter filter = new IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            activity.registerReceiver(broadcastReceiver, filter, Context.RECEIVER_EXPORTED, null);
+                        } else {
+                            activity.registerReceiver(broadcastReceiver, filter);
+                        }
                         result.success(null);
                     }
                 });
