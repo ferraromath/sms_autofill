@@ -51,9 +51,6 @@ public class SmsAutoFillPlugin implements FlutterPlugin, ActivityAware, MethodCa
     private static final int PHONE_HINT_REQUEST = 11012;
     private static final String channelName = "sms_autofill";
 
-    private static final int ANDROID_13_API = 33;
-    private static final int RECEIVER_EXPORTED = 0x00000001;
-
     private Activity activity;
     private Result pendingHintResult;
     private MethodChannel channel;
@@ -115,8 +112,8 @@ public class SmsAutoFillPlugin implements FlutterPlugin, ActivityAware, MethodCa
                         broadcastReceiver = new SmsBroadcastReceiver(new WeakReference<>(SmsAutoFillPlugin.this),
                                 smsCodeRegexPattern);
                         IntentFilter filter = new IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION);
-                        if (Build.VERSION.SDK_INT >= ANDROID_13_API) {
-                            activity.registerReceiver(broadcastReceiver, filter, RECEIVER_EXPORTED, null);
+                        if (Build.VERSION.SDK_INT >= 33) {
+                            activity.registerReceiver(broadcastReceiver, filter, Context.RECEIVER_EXPORTED, null);
                         } else {
                             activity.registerReceiver(broadcastReceiver, filter);
                         }
